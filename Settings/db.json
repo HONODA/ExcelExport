@@ -1,0 +1,8 @@
+[
+   {
+    "SERVER" : "TZH\\MSSQLSERVER14",
+    "USER" : "sa",
+    "PASSWORD" : "Fang85558048",
+    "DATABASE" : "KDAcctDB"
+   }
+]
