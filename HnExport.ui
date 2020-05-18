@@ -81,7 +81,7 @@
     <bool>false</bool>
    </property>
    <property name="selectionMode">
-    <enum>QAbstractItemView::ExtendedSelection</enum>
+    <enum>QAbstractItemView::MultiSelection</enum>
    </property>
    <property name="flow">
     <enum>QListView::TopToBottom</enum>
@@ -130,7 +130,7 @@
     <rect>
      <x>400</x>
      <y>190</y>
-     <width>151</width>
+     <width>161</width>
      <height>201</height>
     </rect>
    </property>
@@ -157,6 +157,9 @@
        <enum>QCalendarWidget::SingleSelection</enum>
       </property>
       <property name="navigationBarVisible">
+       <bool>true</bool>
+      </property>
+      <property name="dateEditEnabled">
        <bool>true</bool>
       </property>
      </widget>
@@ -186,7 +189,42 @@
      </layout>
     </item>
    </layout>
+   <zorder>horizontalLayoutWidget</zorder>
+   <zorder>calendar1</zorder>
   </widget>
+  <widget class="QLineEdit" name="search_suplier">
+   <property name="geometry">
+    <rect>
+     <x>223</x>
+     <y>45</y>
+     <width>171</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>47</y>
+     <width>91</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>供应商搜索：</string>
+   </property>
+  </widget>
+  <zorder>label</zorder>
+  <zorder>search_suplier</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>Suplierlist</zorder>
+  <zorder>before_date</zorder>
+  <zorder>after_date</zorder>
+  <zorder>Accountlist</zorder>
+  <zorder>verticalLayoutWidget_2</zorder>
  </widget>
  <resources/>
  <connections/>

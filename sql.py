@@ -5,10 +5,10 @@ from tool import tool
 
 class sql ():
         
-    SERVER = tool.loadJson()['SERVER']
-    USER = tool.loadJson()['USER']
-    PASSWORD =  tool.loadJson()['PASSWORD']
-    DATABASE =  tool.loadJson()['DATABASE']
+    SERVER = tool.loadJson()[0]['SERVER']
+    USER = tool.loadJson()[0]['USER']
+    PASSWORD =  tool.loadJson()[0]['PASSWORD']
+    DATABASE =  tool.loadJson()[0]['DATABASE']
 
     @staticmethod
     def conn():

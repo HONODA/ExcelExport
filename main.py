@@ -88,10 +88,9 @@ def account_List_dblclick(index):
 
 def select_all_button_click(event):
     ui.Suplierlist.selectAll()
-def clear_all_button_click():
-    #qindex = QModelIndex()
+
+def clear_all_button_click(event):
     ui.Suplierlist.clearSelection()
-    #ui.Suplierlist.setCurrentIndex(qindex)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

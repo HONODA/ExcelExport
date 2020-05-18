@@ -4,5 +4,9 @@
     "USER" : "sa",
     "PASSWORD" : "Fang85558048",
     "DATABASE" : "KDAcctDB"
+   },
+   {
+      "DATABASE":"AIS20200428115630"
    }
+
 ]

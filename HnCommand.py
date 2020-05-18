@@ -1,7 +1,8 @@
 from sql import sql as sq
+from tool import tool
 #import sql as sq
 class command :
-
+    @staticmethod
     def get_KdAccount():
         dat = sq.DATABASE 
         command.changeDataBase()
@@ -18,6 +19,7 @@ class command :
         conn.close()
         command.changeDataBase(_database=dat)
         return list
+    @staticmethod
     def toJsonSource(list):
         l = []
         floor1 = 0
@@ -46,6 +48,7 @@ class command :
             sq.change()
         else:
             sq.change(database=_database)
+    @staticmethod
     def getSuplier(id = ""):
         where  = ""
         if id != "":
@@ -61,6 +64,24 @@ class command :
             rows = cursor.fetchone()
         conn.close()
         return list
+    @staticmethod
+    def getStatement(_suplier,_before_date,_after_date):
+        where  = ""
+        if id != "":
+            where = "where FSupplyID ='" + _suplier +"' and Fdate >= "+_before_date +"' and Fdate <="+_after_date
+        conn = sq.conn()
+        sql = tool.loadSqlJson()[0]['select_statement']+ where 
+        print(sql)
+        cursor = conn.cursor() #创建游标
+        cursor.execute(sql)
+        rows = cursor.fetchone()
+        list = []
+        while rows:
+            list.append(rows)
+            rows = cursor.fetchone()
+        conn.close()
+        return list
+
 if __name__ == '__main__':
     list = command.getBomMotherByBomNo('BOM000009')
     num =[1,8,11,27]
