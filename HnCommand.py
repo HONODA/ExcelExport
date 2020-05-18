@@ -54,7 +54,7 @@ class command :
         if id != "":
             where = "where FITEMID ='" + id +"'"
         conn = sq.conn()
-        sql = "select FItemID , Fname as 供应商名称, FNumber as 代码 from t_Supplier" + where 
+        sql = "select FItemID , Fname as 供应商名称, FNumber as 编码 from t_Supplier" + where 
         cursor = conn.cursor() #创建游标
         cursor.execute(sql)
         rows = cursor.fetchone()
@@ -67,8 +67,7 @@ class command :
     @staticmethod
     def getStatement(_suplier,_before_date,_after_date):
         where  = ""
-        if id != "":
-            where = "where FSupplyID ='" + _suplier +"' and Fdate >= "+_before_date +"' and Fdate <="+_after_date
+        where = " where FSupplyID ='" + _suplier +"' and Fdate >= '"+_before_date +"' and Fdate <='"+_after_date+"'"
         conn = sq.conn()
         sql = tool.loadSqlJson()[0]['select_statement']+ where 
         print(sql)

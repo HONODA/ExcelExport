@@ -28,17 +28,18 @@ def check():
             return True
     # if i > j :
     #     print("")
-    
 def hideCalendar():
      ui =pool.return_UI()
-     ui.calendar1.setVisible(False)
-     ui.calendar_yes_button.setVisible(False)
-     ui.calendar_cancal_button.setVisible(False)
+     ui.calendar1.setHidden(True)
+     ui.calendar_yes_button.setHidden(True)
+     ui.calendar_cancal_button.setHidden(True)
+     ui.verticalLayoutWidget_2.setHidden(True)
 def showCalendar(_value = ""):
     ui = pool.return_UI()
-    ui.calendar1.setVisible(True)
-    ui.calendar_yes_button.setVisible(True)
-    ui.calendar_cancal_button.setVisible(True)
+    ui.calendar1.setHidden(False)
+    ui.calendar_yes_button.setHidden(False)
+    ui.calendar_cancal_button.setHidden(False)
+    ui.verticalLayoutWidget_2.setHidden(False)
     #ui.buttonBox.accepted.connect(lambda : setDate(ui.calendar1.selectedDate(),_value))
     
     ui.calendar_yes_button.clicked.connect(lambda : setDate(ui.calendar1.selectedDate(),_value))
@@ -61,7 +62,7 @@ def before_datekeyPressEvent(event):
         showCalendar(pool.BEFORE_DATE)
 def init():
     #ui = HnExport.Ui_Dialog()
-    ui = pool.return_UI()
+    #ui = pool.return_UI()
     ui.after_date.keyPressEvent = after_datekeyPressEvent#value="after_date"
     ui.before_date.keyPressEvent = before_datekeyPressEvent#value="before_date"
     ui.before_date.setDate(QDate.currentDate())
@@ -69,12 +70,18 @@ def init():
     ui.before_date.dateChanged.connect(before_DateChanged)
     ui.after_date.dateChanged.connect(after_DateChange)
     Service.showAccount()
+    ui.Accountlist.setSelectionBehavior(QAbstractItemView.SelectRows)
     ui.Accountlist.doubleClicked.connect(account_List_dblclick)
     ui.select_all_button.clicked.connect(select_all_button_click)
     ui.clear_all_button.clicked.connect(clear_all_button_click)
+    ui.export_button.clicked.connect(export_excel)
+    ui.Supliertable.clicked.connect(suplier_select_row)
+    
+    #ui.Supliertable.clicked.connect()
 def before_DateChanged():
     if check() == False:
         ui.after_date.setDate(ui.before_date.date())
+
 def after_DateChange():
     if check() == False:
         ui.before_date.setDate(ui.after_date.date())
@@ -82,16 +89,33 @@ def after_DateChange():
 def account_List_dblclick(index):
     data = index.data()
     row = index.row()
-    ui.Suplierlist.clear()
+    ui.Supliertable.clear()
     print(Service.getAccountDatabaseName(index.row(),index.data()))
     Service.showSuplier(Service.getAccountDatabaseName(row,data))
+    ui.Supliertable.resizeColumnToContents(0)
+    ui.Supliertable.resizeColumnToContents(1)
+
 
 def select_all_button_click(event):
-    ui.Suplierlist.selectAll()
+    ui.Supliertable.selectAll()
 
 def clear_all_button_click(event):
-    ui.Suplierlist.clearSelection()
+    ui.Supliertable.clearSelection()
 
+def export_excel(event):
+    if ui.Suplierlist.count() == 0:
+        return
+    items = ui.Suplierlist.selectedItems()
+    print(items[0].text())
+    before_date = ui.before_date.date().toString('yyyy-MM-dd')
+    after_date = ui.after_date.date().toString('yyyy-MM-dd')
+    mlist = Service.getStatement(items[0].text(),before_date,after_date)
+    #print("sss")
+
+def suplier_select_row(modelindex):
+    #print(modelindex.data())
+
+    pass
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()

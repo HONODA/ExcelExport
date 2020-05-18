@@ -25,8 +25,15 @@ class Service():
         command.changeDataBase(_database=_databasename)
         mlist = command.getSuplier()
         Service.suplier_list = mlist
+        count = len(mlist)
+        ui.Supliertable.setRowCount(count)
+        _i = 0
         for i in mlist:
-            ui.Suplierlist.addItem(i['供应商名称'])
+            ui.Supliertable.setItem(_i,0,QTableWidgetItem(str(i['编码'])))
+            ui.Supliertable.setItem(_i,1,QTableWidgetItem(str(i['供应商名称'])))
+            _i +=1
+            #ui.Suplierlist.addItem(i['供应商名称'])
+    ##TODO 尚未成功
     @staticmethod
     def getSuplier(_str,_index):
         if Service.account_list.count == 0:
@@ -50,3 +57,8 @@ class Service():
             if i['DATABASE'] == _str_account_name:
                 return True
         return False
+
+    @staticmethod
+    def getStatement(_suplier,_before_date,_after_date):
+        mlist = command.getStatement(_suplier,_before_date,_after_date)
+        return mlist 

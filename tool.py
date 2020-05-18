@@ -2,7 +2,7 @@ import json
 class tool():
 
     db_address = 'Settings\\db.json'
-    sql_address = 'Settins\\sql.json'
+    sql_address = 'Settings\\sql.json'
     @staticmethod
     def loadJson():
         f = open(tool.db_address, encoding='utf-8')  
