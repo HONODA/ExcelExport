@@ -5,8 +5,8 @@ from PyQt5.QtCore import QDate
 from PyQt5.QtCore import QModelIndex
 import HnExport
 from pool import pool
+from tool import tool
 from Export_Service import Service
-
 
 def check():
     ui = pool.return_UI()
@@ -103,15 +103,20 @@ def clear_all_button_click(event):
     ui.Supliertable.clearSelection()
 
 def export_excel(event):
-    if ui.Suplierlist.count() == 0:
+    if ui.Supliertable.rowCount() == 0:
         return
-    items = ui.Suplierlist.selectedItems()
+    items = ui.Supliertable.selectedItems()
+    if len(items) == 0:
+        return#TODO 如果找不到供应商，请选择
     print(items[0].text())
     before_date = ui.before_date.date().toString('yyyy-MM-dd')
     after_date = ui.after_date.date().toString('yyyy-MM-dd')
-    mlist = Service.getStatement(items[0].text(),before_date,after_date)
+    state = Service.insertStatement(items[0].text(),before_date,after_date)
+    if state == "-1":
+        return
     #print("sss")
-
+    
+    
 def suplier_select_row(modelindex):
     #print(modelindex.data())
 

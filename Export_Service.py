@@ -33,16 +33,17 @@ class Service():
             ui.Supliertable.setItem(_i,1,QTableWidgetItem(str(i['供应商名称'])))
             _i +=1
             #ui.Suplierlist.addItem(i['供应商名称'])
-    ##TODO 尚未成功
+    
     @staticmethod
-    def getSuplier(_str,_index):
-        if Service.account_list.count == 0:
+    def getSuplierName(_str):
+        if Service.suplier_list.count == 0:
             return None
-        for i in Service.account_list:
-            if i['账套名称'] == _str:
-                return Service.account_list[_index]['数据库名称']
+        for i in Service.suplier_list:
+            if i['编码'] == _str:
+                return i['供应商名称']
         return None
-        
+
+    
     @staticmethod
     def getAccountDatabaseName(_index,_str):
         if Service.account_list.count == 0:
@@ -62,3 +63,17 @@ class Service():
     def getStatement(_suplier,_before_date,_after_date):
         mlist = command.getStatement(_suplier,_before_date,_after_date)
         return mlist 
+    @staticmethod
+    def insertStatement(_suplier,_before_date,_after_date):
+        mlist = Service.getStatement(_suplier,_before_date,_after_date)
+
+        fs = QFileDialog.getExistingDirectory(directory=pool.export_address)
+        if fs =="":
+            return "-1"
+        supliername = Service.getSuplierName(_suplier)
+        fs = fs +"\\"+ supliername + _before_date +"-"+_after_date+".xlsx"
+        print(fs)
+        tool.Copy(fs)
+        if mlist != None and len(mlist) != 0:
+            for i in mlist[0]:     
+                tool.replace_Excel_Argv("&"+i+"&",mlist,fs)

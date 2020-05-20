@@ -67,7 +67,7 @@ class command :
     @staticmethod
     def getStatement(_suplier,_before_date,_after_date):
         where  = ""
-        where = " where FSupplyID ='" + _suplier +"' and Fdate >= '"+_before_date +"' and Fdate <='"+_after_date+"'"
+        where = " where fsupliernumber ='" + _suplier +"' and Fdate >= '"+_before_date +"' and Fdate <='"+_after_date+"'"
         conn = sq.conn()
         sql = tool.loadSqlJson()[0]['select_statement']+ where 
         print(sql)
