@@ -65,7 +65,9 @@ class Service():
         return mlist 
     @staticmethod
     def insertStatement(_suplier,_before_date,_after_date):
-        mlist = Service.getStatement(_suplier,_before_date,_after_date)
+        _before_date_ = _before_date.replace("年","-").replace("月",'-').replace('日','')
+        _after_date_ = _after_date.replace("年","-").replace("月",'-').replace('日','')
+        mlist = Service.getStatement(_suplier,_before_date_,_after_date_)
 
         fs = QFileDialog.getExistingDirectory(directory=pool.export_address)
         if fs =="":
@@ -74,6 +76,12 @@ class Service():
         fs = fs +"\\"+ supliername + _before_date +"-"+_after_date+".xlsx"
         print(fs)
         tool.Copy(fs)
+        after_list =[]
         if mlist != None and len(mlist) != 0:
-            for i in mlist[0]:     
-                tool.replace_Excel_Argv("&"+i+"&",mlist,fs)
+            for i in mlist[0]:
+                after_list.append("&"+i+"&")
+            after_list.append("&前时间&")
+            after_list.append("&后时间&")
+
+            tool.replace_Excel_Argv(after_list,mlist,fs,_title='',_insert_row=True,_before_date=_before_date,_after_date=_after_date)
+        

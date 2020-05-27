@@ -109,8 +109,8 @@ def export_excel(event):
     if len(items) == 0:
         return#TODO 如果找不到供应商，请选择
     print(items[0].text())
-    before_date = ui.before_date.date().toString('yyyy-MM-dd')
-    after_date = ui.after_date.date().toString('yyyy-MM-dd')
+    before_date = ui.before_date.date().toString('yyyy年MM月dd日')
+    after_date = ui.after_date.date().toString('yyyy年MM月dd日')
     state = Service.insertStatement(items[0].text(),before_date,after_date)
     if state == "-1":
         return

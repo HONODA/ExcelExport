@@ -9,7 +9,7 @@ class sql ():
     USER = tool.loadJson()[0]['USER']
     PASSWORD =  tool.loadJson()[0]['PASSWORD']
     DATABASE =  tool.loadJson()[0]['DATABASE']
-
+    LOG = tool.loadJsons(tool.setting_address)[0]["write_sql_log"]
     @staticmethod
     def conn():
         try:
@@ -27,6 +27,23 @@ class sql ():
         sql.USER =user
         sql.PASSWORD = password
         sql.DATABASE = database
-        
+    @staticmethod
+    def excute(conn,_sql):
+        cursor = conn.cursor() #创建游标
+        if sql.LOG == "True":
+            sql.WriteLog(_sql)
+        cursor.execute(_sql)
+        rows = cursor.fetchone()
+        list = []
+        while rows:
+            list.append(rows)
+            rows = cursor.fetchone()
+        conn.close()
+        return list
+    @staticmethod
+    def WriteLog(_str):
+       file =  open(tool.log_address,"a+",encoding='utf-8')
+       file.writelines(_str+"\n")
+       file.close()
 if __name__ == '__main__':
     conn = conn()

@@ -1,2 +1,5 @@
 对账单模板.xlsx
 *.xlsx
+*.pyc
+log.txt
+sql_log.txt

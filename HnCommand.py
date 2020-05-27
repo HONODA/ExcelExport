@@ -71,13 +71,7 @@ class command :
         conn = sq.conn()
         sql = tool.loadSqlJson()[0]['select_statement']+ where 
         print(sql)
-        cursor = conn.cursor() #创建游标
-        cursor.execute(sql)
-        rows = cursor.fetchone()
-        list = []
-        while rows:
-            list.append(rows)
-            rows = cursor.fetchone()
+        list = sq.excute(conn,sql)
         conn.close()
         return list
 
