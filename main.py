@@ -3,10 +3,14 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QDate
 from PyQt5.QtCore import QModelIndex
+from PyQt5.QtCore import QThreadPool
+#from concurrent.futures import ThreadPoolExecutor,as_completed
 import HnExport
 from pool import pool
 from tool import tool
+from HnThreadTool import HnQTObjectThreadPool, HnSignal, HnThreadForExcel_Argv
 from Export_Service import Service
+import time
 
 def check():
     ui = pool.return_UI()
@@ -76,8 +80,10 @@ def init():
     ui.clear_all_button.clicked.connect(clear_all_button_click)
     ui.export_button.clicked.connect(export_excel)
     ui.Supliertable.clicked.connect(suplier_select_row)
-    
+    #定义生成一个进度条
+    hideProgressbar()
     #ui.Supliertable.clicked.connect()
+
 def before_DateChanged():
     if check() == False:
         ui.after_date.setDate(ui.before_date.date())
@@ -111,15 +117,74 @@ def export_excel(event):
     print(items[0].text())
     before_date = ui.before_date.date().toString('yyyy年MM月dd日')
     after_date = ui.after_date.date().toString('yyyy年MM月dd日')
-    state = Service.insertStatement(items[0].text(),before_date,after_date)
-    if state == "-1":
-        return
-    #print("sss")
-    
-    
+    fs = QFileDialog.getExistingDirectory(directory=pool.export_address)
+    if fs =="":
+        return "选择文件夹路径为空"
+    count = 0
+    merror =""
+    #执行excel生成任务，且放入进程池
+    # poolnum = tool.loadJsons(tool.setting_address)[0]['pool_num']
+    # with ThreadPoolExecutor(int(poolnum)) as po:
+    #     futurelist =[]
+    #     for i in items:
+    #         if count % 2 == 0:
+    #             future = po.submit(Service.insertStatement,i.text(),fs,before_date,after_date)
+    #             #state = Service.insertStatement(i.text(),fs,before_date,after_date)
+    #             future.add_done_callback(message_call_back)
+    #             futurelist.append(future)
+    #         count +=1
+    #     for f in as_completed(futurelist):
+    #         if f.result() != None:
+    #             merror += f.result()+"\n"
+    maxlen = int(len(items)/2)
+    ui.progressBar.setMaximum(maxlen)
+    pool.max_progress_value = maxlen
+    threadpool = QThreadPool()
+    threadpool.globalInstance()
+    poolnum = tool.loadJsons(tool.setting_address)[0]['pool_num']
+    threadpool.setMaxThreadCount(int(poolnum))
+    #threadpool = HnQTObjectThreadPool()
+    showProgressbar()
+    thread_list = []
+    for i in items:
+        if count % 2 == 0:
+            threadsignal = HnSignal()
+            mythread = HnThreadForExcel_Argv(i.text(),fs,before_date,after_date,threadsignal)
+            threadsignal.progress_signal.connect(progress_bar_callback)
+            threadsignal.result_signal.connect(message_call_back)
+            threadpool.start(mythread)
+        count +=1
+    # for i in thread_list:
+    #     #threadpool.startTimer(2)
+    #     threadpool.start(i)
+
+
+def progress_bar_callback(step):
+    value = ui.progressBar.value()
+    ui.progressBar.setValue(value + step)
+    if ui.progressBar.value() == pool.max_progress_value:
+        hideProgressbar()
+        progress_bar_all_done()
+def progress_bar_all_done():
+    if pool.error_message != "":
+        QMessageBox.information(ui.Supliertable,"错误",pool.error_message)
+    else:
+        QMessageBox.information(ui.Supliertable,"成功","成功生成")
+    pool.error_message = ""
+def message_call_back(merror):
+    if merror != "":
+        pool.error_message = pool.error_message + merror +"\n"
+
+def showProgressbar():
+    ui.progressBar.setHidden(False)
+    ui.progressBar.reset()
+    ui.progressBar.setValue(0)
+def hideProgressbar():
+    ui.progressBar.setHidden(True)
+    ui.progressBar.reset()
+    ui.progressBar.setValue(0)
 def suplier_select_row(modelindex):
     #print(modelindex.data())
-
     pass
 if __name__ == '__main__':
     app = QApplication(sys.argv)

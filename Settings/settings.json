@@ -1,6 +1,7 @@
 [
     {
      "write_log":"True",
-     "write_sql_log":"True"
+     "write_sql_log":"True",
+     "pool_num":"2"
     }
  ]

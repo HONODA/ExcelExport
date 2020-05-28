@@ -38,10 +38,13 @@ class tool():
         try:
             copyfile(tool.template_address,path)
         except IOError as e:
+            raise HnExportException("拒绝访问文件：路径："+path,e.args)
             return '拒绝访问'    #拒绝访问
         except SameFileError as e:
+            raise HnExportException("存在相同名称文件"+path,e.args)
             return '存在相同文件'   #存在相同文件
         except Exception as e:
+            raise HnExportException("未知异常"+path,e.args)
             return e.with_traceback()
     @staticmethod
     def replace_Excel_Argv(_argvlist,_list,_path,_title = '',_insert_row = False,_before_date =None,_after_date =None):
@@ -50,7 +53,7 @@ class tool():
            :param _argvlist: 传入对比表参数
         '''
         try:
-            app = xlwings.App(visible=True,add_book=False)#避免显示Excel 且多文件打开
+            app = xlwings.App(visible=False,add_book=False)#避免显示Excel 且多文件打开
             wk = app.books.open(_path)
             tool.inserted =False #刷新新的文件
         except IOError as e:

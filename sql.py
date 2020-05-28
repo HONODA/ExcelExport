@@ -27,6 +27,7 @@ class sql ():
         sql.USER =user
         sql.PASSWORD = password
         sql.DATABASE = database
+        sql.WriteLog("切换数据库："+database)
     @staticmethod
     def excute(conn,_sql):
         cursor = conn.cursor() #创建游标

@@ -8,6 +8,8 @@ class pool():
     AFTER_DATE = 'after_date'
     export_address = 'Export\\'
     template_address = 'templates\\对账单模板.xlsx'
+    max_progress_value = 0
+    error_message =""
     @staticmethod
     def set_UI(_objUI):
         pool.ui = _objUI

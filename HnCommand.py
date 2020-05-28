@@ -54,15 +54,9 @@ class command :
         if id != "":
             where = "where FITEMID ='" + id +"'"
         conn = sq.conn()
-        sql = "select FItemID , Fname as 供应商名称, FNumber as 编码 from t_Supplier" + where 
-        cursor = conn.cursor() #创建游标
-        cursor.execute(sql)
-        rows = cursor.fetchone()
+        sql = "select FItemID , REPLACE(Fname,'\n','') as 供应商名称, FNumber as 编码 from t_Supplier" + where 
         list = []
-        while rows:
-            list.append(rows)
-            rows = cursor.fetchone()
-        conn.close()
+        list = sq.excute(conn,sql)
         return list
     @staticmethod
     def getStatement(_suplier,_before_date,_after_date):

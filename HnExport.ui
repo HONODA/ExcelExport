@@ -109,8 +109,8 @@
     <rect>
      <x>0</x>
      <y>40</y>
-     <width>301</width>
-     <height>241</height>
+     <width>306</width>
+     <height>275</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -155,8 +155,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>calendar1</zorder>
   </widget>
   <widget class="QLineEdit" name="search_suplier">
    <property name="geometry">
@@ -210,16 +208,28 @@
     </property>
    </column>
   </widget>
+  <widget class="QProgressBar" name="progressBar">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>370</y>
+     <width>381</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>24</number>
+   </property>
+  </widget>
   <zorder>Supliertable</zorder>
   <zorder>label</zorder>
   <zorder>search_suplier</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>verticalLayoutWidget</zorder>
   <zorder>verticalLayoutWidget</zorder>
   <zorder>before_date</zorder>
   <zorder>after_date</zorder>
   <zorder>Accountlist</zorder>
   <zorder>verticalLayoutWidget_2</zorder>
+  <zorder>progressBar</zorder>
  </widget>
  <resources/>
  <connections/>
