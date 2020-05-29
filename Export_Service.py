@@ -33,7 +33,7 @@ class Service():
             ui.Supliertable.setItem(_i,1,QTableWidgetItem(str(i['供应商名称'])))
             _i +=1
             #ui.Suplierlist.addItem(i['供应商名称'])
-    
+        
     @staticmethod
     def getSuplierName(_str):
         if Service.suplier_list.count == 0:
@@ -50,7 +50,7 @@ class Service():
             return None
         for i in Service.account_list:
             if i['账套名称'] == _str:
-                return Service.account_list[_index]['数据库名称']
+                return i['数据库名称']
         return None
     @staticmethod
     def checkWhetherAccount(_str_account_name):

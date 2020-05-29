@@ -1,7 +1,8 @@
 [
     {
      "write_log":"True",
-     "write_sql_log":"True",
-     "pool_num":"2"
+     "write_sql_log":"False",
+     "pool_num":"10",
+     "show_exccel_windows":"False"
     }
  ]

@@ -6,6 +6,7 @@ import re
 import math
 from HnExportException import HnExportException
 import datetime
+
 class tool():
 
     db_address = 'Settings\\db.json'
@@ -14,7 +15,6 @@ class tool():
     template_address = 'templates\\对账单模板.xlsx'
     log_address ='sql_log.txt'
     #allow_log = tool.loadJson(tool.setting_address)[0]["write_log"]
-    inserted = False
     @staticmethod
     def loadJson():
         fi = open(tool.db_address, encoding='utf-8')  
@@ -46,6 +46,7 @@ class tool():
         except Exception as e:
             raise HnExportException("未知异常"+path,e.args)
             return e.with_traceback()
+
     @staticmethod
     def replace_Excel_Argv(_argvlist,_list,_path,_title = '',_insert_row = False,_before_date =None,_after_date =None):
         '''
@@ -53,9 +54,12 @@ class tool():
            :param _argvlist: 传入对比表参数
         '''
         try:
-            app = xlwings.App(visible=False,add_book=False)#避免显示Excel 且多文件打开
+            visi = tool.loadJsons(tool.setting_address)[0]["show_exccel_windows"]
+            if visi == "True":
+                app = xlwings.App(visible=True,add_book=False)#避免显示Excel 且多文件打开
+            else:
+                app = xlwings.App(visible=False,add_book=False)#避免显示Excel 且多文件打开
             wk = app.books.open(_path)
-            tool.inserted =False #刷新新的文件
         except IOError as e:
             mstr = ''
             for i in e.args:
@@ -134,12 +138,19 @@ class tool():
         return "1"
     @staticmethod
     def replace_Excel_Argv2(_argvlist,_list,_wk,_path,_title = '',_times = 1,_insert_row = False,_before_date =None,_after_date =None):
+        inserted = False
+        print("开始填充Excel数据")
         ws = _wk.sheets.active
+        print("获取work_sheet状态")
+        print("title名称{}".format(_title))
         if _title != '':
+            if len(_title) > 30:
+                _title = _title[:30]
             ws.name = _title
+            print("设置名称")
         rows = ws.api.usedRange.Rows()  #所有行的数据
         maxcol = ws.api.usedRange.Columns.count #最大列数
-
+        print("获取最大行列数，更改标题")
         argvdict = {}
         for argv in _argvlist:# O(_argvlist*len(rows)*col)
             row = 0
@@ -151,7 +162,7 @@ class tool():
                         break
                 row +=1
         #遍历参数集中包含对应参数的单元格并记录在 argvdict 字典中
-
+        print("遍历参数集中包含对应参数的单元格并记录在 argvdict 字典中")
         for argv in _argvlist:
             is_times = False
             if argv not in argvdict.keys():
@@ -175,11 +186,13 @@ class tool():
                     nexts = mdict.get(g,None)
                 #if mtypes != None and len(mtypes) > 0 and mtypes[0] == '2':
                 tool.clear_argv(ws,row,col,Rule.rulelist[g],1) #清空除【名称】外的规则
+            print("开始遍历数据库取到的数据")
             for colvalue in _list:#数据库取到的数据
                 #每个单元格对应的规则                
-                if _insert_row  and mtypes != None  and tool.inserted == False and len(mtypes) > 0 and mtypes[0] == '2' :
+                if _insert_row  and mtypes != None  and inserted == False and len(mtypes) > 0 and mtypes[0] == '2' :
                     tool.insert_new(ws,row,_times -1)
-                    tool.inserted = True
+                    inserted = True
+                    print("插入行数")
                 #插入设置
 
 
@@ -201,7 +214,7 @@ class tool():
                         raise HnExportException("replace_Excel_Argv2异常：key="+ct+"lastvalue =" +lastvalue,e.args)
                         return "-1"
                 #名称配置
-
+                print("名称配置")
                 if times != None and len(times) > 0 and not is_times:
                     for t in range(int(times[0])):#只有一次
                         cellvalue.append(lastvalue)
@@ -211,6 +224,7 @@ class tool():
                     #填充次数配置
 
             ws[cellname].options(transpose=True).value = cellvalue     #纵列全赋值
+            print("纵列全赋值")
     @staticmethod
     def replace_argv2(_source,_argv,_value,_times = 1):
             for i in range(int(_times)):
@@ -221,6 +235,7 @@ class tool():
                         _source += str(_value)
                     else:
                         _source = str(_value)
+            print("替换单元格数据")
             return _source 
 
     @staticmethod

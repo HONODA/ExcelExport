@@ -9,12 +9,16 @@ class sql ():
     USER = tool.loadJson()[0]['USER']
     PASSWORD =  tool.loadJson()[0]['PASSWORD']
     DATABASE =  tool.loadJson()[0]['DATABASE']
+    PORT = tool.loadJson()[0]['PORT']
     LOG = tool.loadJsons(tool.setting_address)[0]["write_sql_log"]
     @staticmethod
     def conn():
         try:
             #connect = pymssql.connect('192.168.1.220', 'sa', 'Fang85558048', 'AIS20200308203304') #服务器名,账户,密码,数据库名
-            connect = pymssql.connect(server = sql.SERVER, user = sql.USER, password= sql.PASSWORD, database = sql.DATABASE,port='61307',as_dict= True) #服务器名,账户,密码,数据库名
+            if sql.PORT == None or sql.PORT == "":
+                connect = pymssql.connect(server = sql.SERVER, user = sql.USER, password= sql.PASSWORD, database = sql.DATABASE,port=sql.PORT,as_dict= True) #服务器名,账户,密码,数据库名
+            else:
+                 connect = pymssql.connect(server = sql.SERVER, user = sql.USER, password= sql.PASSWORD, database = sql.DATABASE,as_dict= True) #服务器名,账户,密码,数据库名
             if connect:
                 print("连接成功!")
         except Exception as e:
