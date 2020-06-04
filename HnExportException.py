@@ -9,8 +9,10 @@ class HnExportException(Exception):
         for i in arg :
             mstr += str(i)
         
-        self.WriteLog(place+mstr)
-    
+        self.WriteLog(place+":"+mstr)
+    def __init__(self,_str):
+        self.WriteLog(_str) 
+        
     def WriteLog(self,_str):
        file =  open(self.path,"a+",encoding='utf-8')
        file.writelines(_str+"\n")

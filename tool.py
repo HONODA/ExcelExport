@@ -4,9 +4,9 @@ from shutil import SameFileError
 import xlwings
 import re
 import math
-from HnExportException import HnExportException
+from HnExportException import HnExportException 
 import datetime
-
+import traceback
 class tool():
 
     db_address = 'Settings\\db.json'
@@ -59,20 +59,35 @@ class tool():
                 app = xlwings.App(visible=True,add_book=False)#避免显示Excel 且多文件打开
             else:
                 app = xlwings.App(visible=False,add_book=False)#避免显示Excel 且多文件打开
-            wk = app.books.open(_path)
-        except IOError as e:
+            try:
+                wk = app.books.open(_path)
+            except Exception as e:
+                tool.WriteLog(traceback.format_exc())
+            tool.WriteLog("文件路径："+str(_path))
+            tool.WriteLog("wk的值："+str(wk))
+            if wk == None:
+                #l = []
+                #l.append("没有找到Book文件")
+                tool.WriteLog("没有找到Book文件")
+                #raise HnExportException("replace_Excel_Argv",l)
+                return
+        except Exception as e:
             mstr = ''
             for i in e.args:
                 mstr += str(i)
             wk.close()
             app.quit()
-            raise HnExportException("replace_Excel_Argv:","拒绝访问，检查是否以打开该文件")
+            #raise HnExportException("replace_Excel_Argv:","拒绝访问，检查是否以打开该文件")
+            tool.WriteLog(traceback.format_exc())
+            raise HnExportException("replace_Excel_Argv:",e.args)
             return "拒绝访问，检查是否以打开该文件："+mstr
-        if tool.replace_Excel_Argv2(_argvlist,_list,wk,_path,_title,len(_list),_insert_row=_insert_row,
-        _before_date=_before_date,_after_date =_after_date) == "-1":
-            wk.close()
-            app.quit()
-            raise HnExportException("replace_Excel_Argv:","处理过程出现错误 返回 -1")
+        try:
+            if tool.replace_Excel_Argv2(_argvlist,_list,wk,_path,_title,len(_list),_insert_row=_insert_row,
+            _before_date=_before_date,_after_date =_after_date) == "-1":
+                wk.close()
+                app.quit()
+        except Exception as e:
+            raise HnExportException("replace_Excel_Argv2:",e.args)
 
         wk.save(_path)
         wk.close()
@@ -308,7 +323,12 @@ class tool():
             if no_num ==False:
                     mstr = mstr + chr(65 + _next[_i] - _i)
         return mstr
-
+    @staticmethod
+    def WriteLog(_str):
+        if tool.loadJsons(tool.setting_address)[0]["write_tool_log"] == "True":
+            file =  open("tool_log.txt","a+",encoding='utf-8')
+            file.writelines(_str+"\n")
+            file.close()        
 class Rule(object):
 
     rulelist = {'名称':'&','次数':'@times@','表格类型':'!type!','next':'mnext'}

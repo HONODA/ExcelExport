@@ -7,7 +7,7 @@ from pool import pool
 from tool import tool
 from HnCommand import command
 import HnExport
-
+import pythoncom
 class Service():
 
     #展现金蝶账套
@@ -71,7 +71,7 @@ class Service():
         supliername = Service.getSuplierName(_suplier)
         fs = fs +"\\"+ supliername + _before_date +"-"+_after_date+".xlsx"
         print(fs)
-        
+        pythoncom.CoInitialize()        
         after_list =[]
         if mlist != None and len(mlist) != 0:
             tool.Copy(fs)
@@ -80,6 +80,6 @@ class Service():
             after_list.append("&前时间&")
             after_list.append("&后时间&")
 
-            tool.replace_Excel_Argv(after_list,mlist,fs,_title=supliername+"对账单",_insert_row=True,_before_date=_before_date,_after_date=_after_date)
+            return tool.replace_Excel_Argv(after_list,mlist,fs,_title=supliername+"对账单",_insert_row=True,_before_date=_before_date,_after_date=_after_date)
         else:
             return "无"+supliername+"公司的数据。"

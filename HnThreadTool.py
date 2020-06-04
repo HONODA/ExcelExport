@@ -4,6 +4,9 @@ from Export_Service import Service
 from pool import pool
 from tool import tool
 import threading
+from HnExportException import HnExportException
+import traceback
+
 
 class HnQtPoolThread(QThread):
     '''
@@ -82,10 +85,13 @@ class HnThreadForExcel_Argv(QRunnable):
         self.signal = _Hnsignal
         self.setAutoDelete(True)
     def run(self):
-
-        mresult = Service.insertStatement(self._suplier,self.fs,self._before_date,self._after_date)
-        self.signal.result_signal.emit(mresult)
-        self.signal.progress_signal.emit(1)
+        try:
+            mresult = Service.insertStatement(self._suplier,self.fs,self._before_date,self._after_date)
+            self.signal.result_signal.emit(mresult)
+            self.signal.progress_signal.emit(1)
+        except Exception as e :
+            tool.WriteLog(traceback.format_exc())
+            raise HnExportException("inserstatement:"+traceback.format_exc())
 
     def __del__(self):
         pass

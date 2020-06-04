@@ -10,6 +10,7 @@ import HnExport
 from pool import pool
 from tool import tool
 from HnThreadTool import  HnSignal, HnThreadForExcel_Argv,HnQtPoolThread
+from HnExportException import HnExportException
 from Export_Service import Service
 import threading
 
@@ -159,25 +160,25 @@ def export_excel(event):
     #threadpool.setMaxThreadCount(int(poolnum))
     #threadpool = HnQTObjectThreadPool()
     showProgressbar()
-    thread_list = []
     pool.poolthread = HnQtPoolThread()#线程管理线程池
-
-    for i in items:
-        if count % 2 == 0 :
-            threadsignal = HnSignal()
-            thfs = fs
-            mbedate = before_date
-            mafdate = after_date
-            mythread = HnThreadForExcel_Argv(i.text(),thfs,mbedate,mafdate,threadsignal)
-            threadsignal.progress_signal.connect(progress_bar_callback)
-            threadsignal.result_signal.connect(message_call_back)
-            try:
+    try:
+        for i in items:
+            if count % 2 == 0 :
+                threadsignal = HnSignal()
+                thfs = fs
+                mbedate = before_date
+                mafdate = after_date
+                mythread = HnThreadForExcel_Argv(i.text(),thfs,mbedate,mafdate,threadsignal)
+                threadsignal.progress_signal.connect(progress_bar_callback)
+                threadsignal.result_signal.connect(message_call_back)
                 pool.poolthread.addThread(mythread)
-                #print(threadpool.activeThreadCount())
-            except Exception as e:
-                print(e.with_traceback())
-        count +=1
-    pool.poolthread.start()
+
+            count +=1
+        pool.poolthread.start()
+    except Exception as e:
+        print(e.with_traceback())
+        QMessageBox.information(ui.Supliertable,"错误",e.with_traceback())
+        raise HnExportException("导出位置",e.args)
     print("完成")
 #------------------------------------------
 
@@ -222,19 +223,23 @@ def search_suplier():
                 ui.Supliertable.selectRow(_i)
             _i +=1
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    MainWindow = QMainWindow()
-    ui = HnExport.Ui_Dialog()
-    ui.setupUi(MainWindow)
-    MainWindow.setWindowTitle("广州市天志软件")
     try:
-        r = QIcon("Hn.ico")
-        MainWindow.setWindowIcon(r)
-    except:
-        pass
-    
-    pool.set_UI(ui)
-    hideCalendar()
-    init()
-    MainWindow.show()
-    sys.exit(app.exec_())
+        app = QApplication(sys.argv)
+        MainWindow = QMainWindow()
+        ui = HnExport.Ui_Dialog()
+        ui.setupUi(MainWindow)
+        MainWindow.setWindowTitle("广州市天志软件科技有限公司")
+        try:
+            r = QIcon("Hn.ico")
+            MainWindow.setWindowIcon(r)
+        except:
+            pass
+        
+        pool.set_UI(ui)
+        hideCalendar()
+        init()
+        MainWindow.show()
+
+        sys.exit(app.exec_())
+    except Exception as e:
+        raise HnExportException("main",e.args)
